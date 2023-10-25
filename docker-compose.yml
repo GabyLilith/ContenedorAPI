@@ -1,0 +1,29 @@
+version: "3.9"
+
+#Tiene dos contenedores, el icecream_api y db_api
+services:
+  icecream_api: #Este es el contenedor de la api
+    container_name: icecream_api
+    build: . #Aquí se esta generando la imagen con el docker file
+    ports:
+      - 8080:8080
+    environment: #variables de entorno
+      - DATABASE_URL=jdbc:postgresql://db_api:5432/postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+    depends_on: #esto indica que la api se va a generar después de la base de dato
+      - db_api
+  db_api: #este es el contenedor de la base de datos
+    container_name: java_db
+    image: postgres:12 #usaremos la imagen de postgres
+    ports:
+      - 5432:5432
+    volumes: #se genera un volumen para guardar los datos de la base de datos
+      - test_volume:/var/lib/postgresql
+    environment: #variables de entorno
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+volumes:
+  test_volume: #se define el volumen
